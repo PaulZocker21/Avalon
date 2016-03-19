@@ -13,7 +13,7 @@ public class Avalon extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-
+		Pimmel
 	}
 
 	@Override 
