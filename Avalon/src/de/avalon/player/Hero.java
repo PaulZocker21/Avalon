@@ -15,7 +15,7 @@ public class Hero {
 
 	private UUID uuid;
 	private String name;
-
+	
 	private Hero(UUID uuid, String name) {
 		this.uuid = uuid;
 		this.name = name;
