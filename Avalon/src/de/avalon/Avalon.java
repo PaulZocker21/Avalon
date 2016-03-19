@@ -13,7 +13,7 @@ public class Avalon extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		Muschi
+		Paul ist eine Muschi
 	}
 
 	@Override 
