@@ -2,4 +2,5 @@ name: Avalon
 version: 0.1
 author: [Paul, Tim]
 description: a rpg mmo plugin
+main: de.avalon.Avalon
 commands:
