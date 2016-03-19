@@ -8,12 +8,10 @@ public class Avalon extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		Paul ist eine Muschi und ein Pimmel gleichzeitig
 	}
 
 	@Override
 	public void onDisable() {
-		Paul ist eine Muschi haha
 	}
 
 	@Override 
