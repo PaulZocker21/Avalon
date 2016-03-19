@@ -8,7 +8,6 @@ public class Avalon extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		Paul ist eine reudige Mongo.
 	}
 
 	@Override
