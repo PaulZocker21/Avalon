@@ -2,11 +2,27 @@ package de.avalon.mmo;
 
 public abstract class Levelable {
 
-	private static int maxLevel = 10;
+	private final int maxLevel = 10;
 
 	private int exp;
 	private int level;
 	private int maxExp;
+
+	public Levelable() {
+		this.exp = 0;
+		this.level = 0;
+		this.maxExp = calculateMaxExp(1);
+	}
+
+	public Levelable(int level, int exp) {
+		this.level = level;
+		this.exp = exp;
+		this.maxExp = calculateMaxExp(level + 1);
+	}
+
+	public void addExp(int exp) {
+		setExp(this.exp + exp);
+	}
 
 	public int getExp() {
 		return exp;
@@ -16,19 +32,29 @@ public abstract class Levelable {
 		return level;
 	}
 
+	public int getMaxLevel() {
+		return maxLevel;
+	}
+
 	public void setExp(int exp) {
 		if (exp >= maxExp) {
-			setExp(maxExp % exp);
+			this.exp = exp - maxExp;
 			setLevel(level + 1);
-			reachNextLevel();
-			maxExp = calculateMaxExp(level);
+			reachNextLevel(level);
+			maxExp = calculateMaxExp(level + 1);
+			return;
+		}
+		if (exp > this.exp) {
+			eaernExp(exp - this.exp);
 		}
 		this.exp = exp;
 	}
 
+	public abstract void eaernExp(int exp);
+
 	public abstract int calculateMaxExp(int level);
 
-	public abstract void reachNextLevel();
+	public abstract void reachNextLevel(int level);
 
 	public abstract void reachMaxLevel();
 
