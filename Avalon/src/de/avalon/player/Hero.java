@@ -18,7 +18,7 @@ public class Hero {
 	}
 
 	public static Hero create(Player player) {
-	s
+		tz
 	}
 
 	public UUID getUniqueId() {
