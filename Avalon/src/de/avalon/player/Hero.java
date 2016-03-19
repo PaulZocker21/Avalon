@@ -18,7 +18,14 @@ public class Hero {
 	}
 
 	public static Hero create(Player player) {
-		tz
+		if (heros.containsKey(player.getUniqueId())) {
+			return null;
+		}
+		return new Hero(player.getUniqueId(), player.getName());
+	}
+
+	public static Hero getHero(Player player) {
+		return heros.get(player.getUniqueId());
 	}
 
 	public UUID getUniqueId() {
