@@ -25,11 +25,14 @@ public class HeroListener implements Listener {
 	public void onEntityDeath(EntityDeathEvent e) {
 		Entity entity = e.getEntity();
 		if (entity instanceof Monster) {
-			Player killer = ((Monster) entity).getKiller();
-			Hero hero = Hero.getHero(killer);
-			if (hero == null)
-				hero = Hero.create(killer);
-			hero.getSelectetClass().addExp(30);
+			if (((Monster) entity).getKiller() instanceof Player) {
+				Player killer = ((Monster) entity).getKiller();
+				Hero hero = Hero.getHero(killer);
+				if (hero == null)
+					hero = Hero.create(killer);
+				hero.getSelectetClass().addExp(30);
+				hero.getSelectetClass().setMana(0);
+			}
 		}
 	}
 

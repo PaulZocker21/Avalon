@@ -38,7 +38,6 @@ public class Hero {
 	}
 
 	public Clazz getSelectetClass() {
-		classes.keySet().forEach(s -> System.out.println(s));
 		return classes.get(selectetClass);
 	}
 
