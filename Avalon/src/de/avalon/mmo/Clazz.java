@@ -1,20 +1,25 @@
 package de.avalon.mmo;
 
+import java.util.HashMap;
+
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import de.avalon.Avalon;
 import de.avalon.player.Hero;
+import de.avalon.rpg.Skill;
 
 public class Clazz extends Levelable {
 
 	private Hero hero;
+	private HashMap<Skill, Long> skills;
 	private String name;
 	private int mana;
 	private int maxMana;
 
 	public Clazz(String name, Hero hero) {
 		super();
+		this.skills = new HashMap<>();
 		this.name = name;
 		this.hero = hero;
 		this.mana = 20;
@@ -22,10 +27,46 @@ public class Clazz extends Levelable {
 
 	public Clazz(String name, int level, int exp, Hero hero) {
 		super(level, exp);
+		this.skills = new HashMap<>();
 		this.name = name;
 		this.hero = hero;
 		this.mana = 20 + (level * 5);
 		this.maxMana = this.mana;
+	}
+
+	public HashMap<Skill, Long> getSkills() {
+		return skills;
+	}
+
+	public int performSkill(String name) {
+		Skill skill = Skill.getSkill(name);
+		if (skill == null)
+			return Skill.ERROR_UNKOWN;
+		return skill.run(this);
+	}
+
+	public long getLastUss(String name) {
+		Skill skill = Skill.getSkill(name);
+		return getLastUss(skill);
+	}
+
+	public long getLastUss(Skill skill) {
+		if (skill == null)
+			return -1;
+		if (skills.containsKey(skill))
+			return skills.get(skill);
+		return 0L;
+	}
+
+	public void setLastUse(String name, long lastUse) {
+		Skill skill = Skill.getSkill(name);
+		setLastUse(skill, lastUse);
+	}
+
+	public void setLastUse(Skill skill, long lastUse) {
+		if (skill == null)
+			return;
+		skills.put(skill, lastUse);
 	}
 
 	public int getMaxMana() {
@@ -55,7 +96,6 @@ public class Clazz extends Levelable {
 							task = null;
 							cancel();
 						}
-						System.out.println(Clazz.this.mana);
 						Clazz.this.mana++;
 					}
 				}.runTaskTimer(Avalon.getPlguin(), 0L, 20L);
@@ -76,6 +116,7 @@ public class Clazz extends Levelable {
 
 	@Override
 	public void reachNextLevel(int level) {
+		setMaxMana(20 + (level * 5));
 		hero.sendMessage("Herzlichen Glückwunsch, du hast " + level + " erreicht!");
 	}
 

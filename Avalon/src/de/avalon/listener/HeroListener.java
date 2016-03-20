@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import de.avalon.player.Hero;
@@ -19,6 +20,13 @@ public class HeroListener implements Listener {
 		if (hero == null)
 			hero = Hero.create(player);
 		hero.sendMessage("Hallo " + hero.getName());
+	}
+
+	@EventHandler
+	public void onPlayerChat(AsyncPlayerChatEvent e) {
+		Hero hero = Hero.getHero(e.getPlayer());
+		if (hero == null)
+			hero = Hero.create(e.getPlayer());
 	}
 
 	@EventHandler
