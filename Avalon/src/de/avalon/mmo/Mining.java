@@ -1,6 +1,8 @@
 package de.avalon.mmo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Material;
 
@@ -9,7 +11,8 @@ import de.avalon.player.Hero;
 public class Mining extends Levelable {
 
 	public static HashMap<Material, Integer> materials = new HashMap<>();
-
+	public static List<Material>tools = new ArrayList<>();
+	
 	public static int getExperience(Material mat) {
 		return materials.get(mat);
 	}
@@ -23,6 +26,12 @@ public class Mining extends Levelable {
 		materials.put(Material.GOLD_ORE, 15);
 		materials.put(Material.EMERALD_ORE, 20);
 		materials.put(Material.DIAMOND_ORE, 25);
+	
+		tools.add(Material.WOOD_PICKAXE);
+		tools.add(Material.STONE_PICKAXE);
+		tools.add(Material.IRON_PICKAXE);
+		tools.add(Material.GOLD_PICKAXE);
+		tools.add(Material.DIAMOND_PICKAXE);
 	}
 
 	private Hero hero;

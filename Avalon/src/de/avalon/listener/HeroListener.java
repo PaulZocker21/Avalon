@@ -15,6 +15,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import de.avalon.mmo.Digging;
 import de.avalon.mmo.Forest;
 import de.avalon.mmo.Mining;
 import de.avalon.player.Hero;
@@ -28,9 +29,15 @@ public class HeroListener implements Listener {
 		if (hero == null)
 			hero = Hero.create(player);
 		Material mat = e.getPlayer().getItemInHand().getType();
-		if (mat.equals(Material.WOOD_AXE) || mat.equals(Material.STONE_AXE) || mat.equals(Material.IRON_AXE) || mat.equals(Material.GOLD_AXE) || mat.equals(Material.DIAMOND_AXE)) {
+		if (Forest.tools.contains(mat)) {
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				int code = hero.getForest().use();
+				if (code == 1)
+					hero.sendMessage("Du hast die Spezialfähigkeit benutzt!");
+			}
+		} else if (Digging.tools.contains(mat)) {
+			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				int code = hero.getDigging().use();
 				if (code == 1)
 					hero.sendMessage("Du hast die Spezialfähigkeit benutzt!");
 			}
@@ -44,7 +51,8 @@ public class HeroListener implements Listener {
 		if (hero == null)
 			hero = Hero.create(player);
 		Material mat = e.getBlock().getType();
-		if (Mining.materials.containsKey(mat)) {
+		Material tool = player.getItemInHand().getType();
+		if (Mining.materials.containsKey(mat) && Mining.tools.contains(tool)) {
 			int exp = Mining.getExperience(mat);
 			hero.getMining().addExp(exp);
 			if (mat == Material.DIAMOND_ORE || mat == Material.REDSTONE_ORE || mat == Material.LAPIS_ORE || mat == Material.EMERALD_ORE) {
@@ -56,10 +64,13 @@ public class HeroListener implements Listener {
 					});
 				}
 			}
-		} else if (Forest.materials.containsKey(mat)) {
+		} else if (Forest.materials.containsKey(mat) && Forest.tools.contains(tool)) {
 			int exp = Forest.getExperience(mat);
 			hero.getForest().addExp(exp);
 			hero.getForest().runSpecial(e.getBlock());
+		} else if (Digging.materials.containsKey(mat) && Digging.tools.contains(tool)) {
+			int exp = Digging.getExperience(mat);
+			hero.getDigging().addExp(exp);
 		}
 	}
 

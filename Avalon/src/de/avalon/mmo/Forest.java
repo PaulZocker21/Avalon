@@ -1,6 +1,8 @@
 package de.avalon.mmo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,7 +15,8 @@ import de.avalon.player.Hero;
 public class Forest extends Levelable {
 
 	public static HashMap<Material, Integer> materials = new HashMap<>();
-
+	public static List<Material>tools = new ArrayList<>();
+	
 	public static int getExperience(Material mat) {
 		return materials.get(mat);
 	}
@@ -22,6 +25,11 @@ public class Forest extends Levelable {
 		materials.put(Material.LOG, 5);
 		materials.put(Material.LOG_2, 5);
 
+		tools.add(Material.WOOD_AXE);
+		tools.add(Material.STONE_AXE);
+		tools.add(Material.IRON_AXE);
+		tools.add(Material.GOLD_AXE);
+		tools.add(Material.DIAMOND_AXE);
 	}
 
 	private static final long cooldown = 5 * 1000L;
@@ -89,10 +97,6 @@ public class Forest extends Levelable {
 
 	public boolean isSpecial() {
 		return special;
-	}
-
-	public int getLuckPercent() {
-		return getLevel();
 	}
 
 	public Hero getHero() {

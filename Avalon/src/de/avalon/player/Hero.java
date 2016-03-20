@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import de.avalon.mmo.Clazz;
+import de.avalon.mmo.Digging;
 import de.avalon.mmo.Forest;
 import de.avalon.mmo.Mining;
 
@@ -23,6 +24,7 @@ public class Hero {
 	private String selectetClass;
 	private Mining mining;
 	private Forest forest;
+	private Digging digging;
 
 	private Hero(UUID uuid, String name) {
 		this.classes = new HashMap<>();
@@ -41,6 +43,14 @@ public class Hero {
 		this.name = name;
 		this.selectetClass = selectetClass;
 		this.mining = new Mining(this);
+	}
+
+	public Digging getDigging() {
+		return digging;
+	}
+
+	private void setDigging(Digging digging) {
+		this.digging = digging;
 	}
 
 	private void setForest(Forest forest) {
@@ -120,6 +130,8 @@ public class Hero {
 		config.set(uuid + ".mining.exp", mining.getExp());
 		config.set(uuid + ".forest.level", forest.getLevel());
 		config.set(uuid + ".forest.exp", forest.getExp());
+		config.set(uuid + ".digging.level", digging.getLevel());
+		config.set(uuid + ".digging.exp", digging.getExp());
 	}
 
 	public static void loadAll(File file) {
@@ -146,6 +158,11 @@ public class Hero {
 			int forestExp = config.getInt(uuid + ".forest.exp");
 			Forest forest = new Forest(forestLevel, forestExp, hero);
 			hero.setForest(forest);
+			int diggingLevel = config.getInt(uuid + ".digging.level");
+			int diggingExp = config.getInt(uuid + ".digging.exp");
+			Digging digging = new Digging(diggingLevel, diggingExp, hero);
+			hero.setDigging(digging);
+
 			heros.put(hero.getUniqueId(), hero);
 		}
 		System.out.println("Loaded " + heros.size() + " heros");
