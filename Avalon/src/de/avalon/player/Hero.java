@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import de.avalon.mmo.Clazz;
+import de.avalon.mmo.Mining;
 
 public class Hero {
 
@@ -19,6 +20,7 @@ public class Hero {
 	private String name;
 	private HashMap<String, Clazz> classes;
 	private String selectetClass;
+	private Mining mining;
 
 	private Hero(UUID uuid, String name) {
 		this.classes = new HashMap<>();
@@ -28,6 +30,7 @@ public class Hero {
 		addClass(new Clazz("Test", this));
 
 		this.selectetClass = "Test";
+		this.mining = new Mining(this);
 	}
 
 	private Hero(UUID uuid, String name, String selectetClass) {
@@ -35,6 +38,11 @@ public class Hero {
 		this.uuid = uuid;
 		this.name = name;
 		this.selectetClass = selectetClass;
+		this.mining = new Mining(this);
+	}
+
+	public Mining getMining() {
+		return mining;
 	}
 
 	public Clazz getSelectetClass() {
@@ -73,6 +81,10 @@ public class Hero {
 		return name;
 	}
 
+	private void setMining(Mining mining) {
+		this.mining = mining;
+	}
+
 	public static Hero create(Player player) {
 		if (heros.containsKey(player.getUniqueId())) {
 			return null;
@@ -94,6 +106,8 @@ public class Hero {
 			config.set(clazzPath + clazz.getName() + "." + ".level", clazz.getLevel());
 			config.set(clazzPath + clazz.getName() + "." + ".exp", clazz.getExp());
 		});
+		config.set(uuid + ".mining.level", mining.getLevel());
+		config.set(uuid + ".mining.exp", mining.getExp());
 	}
 
 	public static void loadAll(File file) {
@@ -112,6 +126,10 @@ public class Hero {
 				Clazz clazz = new Clazz(clazzName, level, exp, hero);
 				hero.addClass(clazz);
 			}
+			int miningLevel = config.getInt(uuid + ".mining.level");
+			int miningExp = config.getInt(uuid + ".mining.exp");
+			Mining mining = new Mining(miningLevel, miningExp, hero);
+			hero.setMining(mining);
 			heros.put(hero.getUniqueId(), hero);
 		}
 		System.out.println("Loaded " + heros.size() + " heros");
