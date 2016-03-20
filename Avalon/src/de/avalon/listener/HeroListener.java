@@ -1,9 +1,7 @@
 package de.avalon.listener;
 
 import java.util.Random;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
@@ -16,63 +14,58 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import de.avalon.Avalon;
-import de.avalon.mmo.Chest_Avalon;
+
+import de.avalon.bossbar.BossBarAPI;
+import de.avalon.bossbar.BossBarAPI.Color;
+import de.avalon.bossbar.BossBarAPI.Style;
 import de.avalon.mmo.Digging;
 import de.avalon.mmo.Forest;
 import de.avalon.mmo.Mining;
 import de.avalon.player.Hero;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class HeroListener implements Listener {
 
+	// Chest System
+	// @EventHandler
+	// public void onChestProtectAndOpen(PlayerInteractEvent e) {
+	// if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+	// if (e.getClickedBlock().getType().equals(Material.CHEST)) {
+	// if (!(Avalon.chests.containsKey(e.getClickedBlock().getLocation()))) {
+	// if ((e.getPlayer().getItemInHand().getType().equals(Material.IRON_INGOT))
+	// || (e.getPlayer().getItemInHand().getType().equals(Material.GOLD_INGOT))
+	// || (e.getPlayer().getItemInHand().getType().equals(Material.DIAMOND)) ||
+	// (e.getPlayer().getItemInHand().getType().equals(Material.OBSIDIAN))) {
+	// Chest_Avalon chest = new Chest_Avalon();
+	// chest.setOwner(e.getPlayer().getUniqueId());
+	// chest.setSavedBy(e.getPlayer().getItemInHand().getType());
+	//
+	// Avalon.chests.put(e.getClickedBlock().getLocation(), chest);
+	//
+	// e.getPlayer().sendMessage("§aErfolgreich Truhe mit " +
+	// e.getPlayer().getItemInHand().getType() + " gesichert!");
+	//
+	// }
+	// } else {
+	// UUID uuid =
+	// Avalon.chests.get(e.getClickedBlock().getLocation()).getOwner();
+	// if (!(e.getPlayer().getUniqueId().equals(uuid))) {
+	//
+	// e.getPlayer().sendMessage("§cDiese Truhe ist leider von §6" +
+	// Bukkit.getServer().getPlayer(uuid).getName() + "§c mit §6" +
+	// Avalon.chests.get(e.getClickedBlock().getLocation()).getSavedBy() + "§c
+	// geschützt!");
+	// e.setCancelled(true);
+	//
+	// }
+	//
+	// }
+	// }
+	// }
+	// }
 
-	//Chest System
-	@SuppressWarnings("deprecation")
-	@EventHandler
-	public void onChestProtectAndOpen(PlayerInteractEvent e) {
-		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-			if(e.getClickedBlock().getType().equals(Material.CHEST)){
-				
-				
-				if(!(Avalon.chests.containsKey(e.getClickedBlock().getLocation()))){
-					if((e.getPlayer().getItemInHand().getType().equals(Material.IRON_INGOT)) || 
-							(e.getPlayer().getItemInHand().getType().equals(Material.GOLD_INGOT)) ||
-							(e.getPlayer().getItemInHand().getType().equals(Material.DIAMOND)) ||
-							(e.getPlayer().getItemInHand().getType().equals(Material.OBSIDIAN)) 	){					
-						
-						Chest_Avalon chest = new Chest_Avalon();
-						chest.setOwner(e.getPlayer().getUniqueId());
-						chest.setSavedBy(e.getPlayer().getItemInHand().getType());
-						
-						Avalon.chests.put(e.getClickedBlock().getLocation(), chest);
-						
-						e.getPlayer().sendMessage("§aErfolgreich Truhe mit " + e.getPlayer().getItemInHand().getType() + " gesichert!");
-						
-					}
-				}else{
-					
-					UUID uuid = Avalon.chests.get(e.getClickedBlock().getLocation()).getOwner();
-		
-					
-					if(! (	e.getPlayer().getUniqueId().equals( uuid ))){
-				
-						e.getPlayer().sendMessage("§cDiese Truhe ist leider von §6" + Bukkit.getServer().getPlayer(uuid).getName() + "§c mit §6" + Avalon.chests.get(e.getClickedBlock().getLocation()).getSavedBy() + "§c geschützt!");
-						e.setCancelled(true);
-					
-					}
-					
-				}
-				
-				
-			}
-		}
-	}
-	
-	//Chest System Ende
-	
-	
-	
-	@SuppressWarnings("deprecation")
+	// Chest System Ende
+
 	@EventHandler
 	public void onHeroInteract(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
@@ -95,7 +88,6 @@ public class HeroListener implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e) {
 		Player player = e.getPlayer();
@@ -133,6 +125,7 @@ public class HeroListener implements Listener {
 		if (hero == null)
 			hero = Hero.create(player);
 		hero.sendMessage("Hallo " + hero.getName());
+		BossBarAPI.addBar(player, new TextComponent("Jaaa"), Color.BLUE, Style.NOTCHED_10, 1f).setVisible(true);;
 	}
 
 	@EventHandler
