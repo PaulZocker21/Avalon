@@ -8,9 +8,11 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import de.avalon.mmo.Mining;
@@ -18,8 +20,24 @@ import de.avalon.player.Hero;
 
 public class HeroListener implements Listener {
 
+	
+	
+	@EventHandler
+	public void onBlockBreak(PlayerInteractEvent e) {
+		if(e.getAction().equals(Action.LEFT_CLICK_AIR))
+		    Hero.getHero(e.getPlayer()).getSelectetClass().performSkill("Aufopferung");
+		if(e.getAction().equals(Action.RIGHT_CLICK_AIR))
+		    Hero.getHero(e.getPlayer()).getSelectetClass().performSkill("Verzweifeltes Gebet");
+	}
+	
+    
+    
+    
+    
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e) {
+	
+	        
 		Player player = e.getPlayer();
 		Hero hero = Hero.getHero(player);
 		if (hero == null)

@@ -16,6 +16,12 @@ public class Clazz extends Levelable {
 	private String name;
 	private int mana;
 	private int maxMana;
+	
+	@Override
+	public int getMaxLevel() {
+		return 100;
+	}
+	
 
 	public Clazz(String name, Hero hero) {
 		super();

@@ -4,8 +4,8 @@ import de.avalon.mmo.Clazz;
 
 public class HealSkill extends Skill {
 
-	public HealSkill(String name, int minMana, int minLevel, int cooldown) {
-		super(name, minMana, minLevel, cooldown);
+	public HealSkill(String name, int minMana, int minLevel, int cooldown, String description) {
+		super(name, minMana, minLevel, cooldown, description);
 	}
 
 	@Override
