@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import de.avalon.mmo.Clazz;
+import de.avalon.mmo.Forest;
 import de.avalon.mmo.Mining;
 
 public class Hero {
@@ -21,6 +22,7 @@ public class Hero {
 	private HashMap<String, Clazz> classes;
 	private String selectetClass;
 	private Mining mining;
+	private Forest forest;
 
 	private Hero(UUID uuid, String name) {
 		this.classes = new HashMap<>();
@@ -39,6 +41,14 @@ public class Hero {
 		this.name = name;
 		this.selectetClass = selectetClass;
 		this.mining = new Mining(this);
+	}
+
+	private void setForest(Forest forest) {
+		this.forest = forest;
+	}
+
+	public Forest getForest() {
+		return forest;
 	}
 
 	public Mining getMining() {
@@ -108,6 +118,8 @@ public class Hero {
 		});
 		config.set(uuid + ".mining.level", mining.getLevel());
 		config.set(uuid + ".mining.exp", mining.getExp());
+		config.set(uuid + ".forest.level", forest.getLevel());
+		config.set(uuid + ".forest.exp", forest.getExp());
 	}
 
 	public static void loadAll(File file) {
@@ -130,6 +142,10 @@ public class Hero {
 			int miningExp = config.getInt(uuid + ".mining.exp");
 			Mining mining = new Mining(miningLevel, miningExp, hero);
 			hero.setMining(mining);
+			int forestLevel = config.getInt(uuid + ".forest.level");
+			int forestExp = config.getInt(uuid + ".forest.exp");
+			Forest forest = new Forest(forestLevel, forestExp, hero);
+			hero.setForest(forest);
 			heros.put(hero.getUniqueId(), hero);
 		}
 		System.out.println("Loaded " + heros.size() + " heros");

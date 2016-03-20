@@ -2,7 +2,6 @@ package de.avalon.mmo;
 
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -20,10 +19,12 @@ public class Forest extends Levelable {
 	}
 
 	static {
-		materials.put(Material.WOOD, 5);
+		materials.put(Material.LOG, 5);
+		materials.put(Material.LOG_2, 5);
+
 	}
 
-	private static final long cooldown = 60 * 1000L;
+	private static final long cooldown = 5 * 1000L;
 
 	private Hero hero;
 	private boolean special;
@@ -42,7 +43,9 @@ public class Forest extends Levelable {
 	public int use() {
 		if (lastUse + cooldown > System.currentTimeMillis())
 			return -1;
-		setLastUse(lastUse);
+		if (special)
+			return -2;
+		setLastUse(System.currentTimeMillis());
 		setSpecial(true);
 		new BukkitRunnable() {
 
@@ -50,21 +53,24 @@ public class Forest extends Levelable {
 			public void run() {
 				setSpecial(false);
 			}
-		}.runTaskLater(Avalon.getPlguin(), cooldown);
+		}.runTaskLater(Avalon.getPlguin(), calculateUsing() * 20L);
 		return 1;
 	}
 
-	public void runSpecial(Block block) {
-		if (use() == 1) {
-			if (isSpecial()) {
-				if (!hero.getForest().isSpecial()) {
-					while ((block = block.getRelative(BlockFace.UP)).getType() == Material.WOOD) {
-						block.breakNaturally();
-					}
-					while ((block = block.getRelative(BlockFace.DOWN)).getType() == Material.WOOD) {
-						block.breakNaturally();
-					}
-				}
+	public long calculateUsing() {
+		return 5 + getLevel();
+	}
+
+	public void runSpecial(Block b) {
+		if (isSpecial()) {
+			Block block = b;
+			while ((block = block.getRelative(BlockFace.UP)).getType() == Material.LOG || block.getType() == Material.LOG_2) {
+				block.breakNaturally();
+				addExp(1);
+			}
+			while ((b = b.getRelative(BlockFace.DOWN)).getType() == Material.LOG || b.getType() == Material.LOG_2) {
+				b.breakNaturally();
+				addExp(1);
 			}
 		}
 	}
