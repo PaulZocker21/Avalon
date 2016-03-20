@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.avalon.listener.HeroListener;
+import de.avalon.listener.SkillListener;
 import de.avalon.player.Hero;
 
 public class Avalon extends JavaPlugin {
@@ -19,6 +20,7 @@ public class Avalon extends JavaPlugin {
 		instance = this;
 
 		getServer().getPluginManager().registerEvents(new HeroListener(), this);
+		getServer().getPluginManager().registerEvents(new SkillListener(), this);
 		
 		Hero.loadAll(player_file);
 	}

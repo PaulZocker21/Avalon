@@ -5,6 +5,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkull;
 
+import de.avalon.listener.SkillListener;
 import de.avalon.mmo.Clazz;
 import de.avalon.rpg.Skill;
 import de.avalon.utils.ParticleEffectAPI;
@@ -45,7 +46,7 @@ public class Aufopferung extends Skill {
               sb.setShooter(player);
               sb.setVelocity(player.getEyeLocation().getDirection());
 			    
-			
+              SkillListener.aws.add(sb);
 
 			  ParticleEffectAPI.SPELL_WITCH.display(1, 1, 1, 1, 50, clazz.getHero().getBukkitPlayer().getLocation().add(0, 1, 0) , 2);
               ParticleEffectAPI.SMOKE_LARGE.display(1, 1, 1, 0, 20, clazz.getHero().getBukkitPlayer().getLocation().add(0, 1, 0) , 2);
