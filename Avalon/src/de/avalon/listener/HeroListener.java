@@ -1,7 +1,9 @@
 package de.avalon.listener;
 
 import java.util.Random;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
@@ -14,7 +16,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-
+import de.avalon.Avalon;
+import de.avalon.mmo.Chest_Avalon;
 import de.avalon.mmo.Digging;
 import de.avalon.mmo.Forest;
 import de.avalon.mmo.Mining;
@@ -22,6 +25,54 @@ import de.avalon.player.Hero;
 
 public class HeroListener implements Listener {
 
+
+	//Chest System
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onChestProtectAndOpen(PlayerInteractEvent e) {
+		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+			if(e.getClickedBlock().getType().equals(Material.CHEST)){
+				
+				
+				if(!(Avalon.chests.containsKey(e.getClickedBlock().getLocation()))){
+					if((e.getPlayer().getItemInHand().getType().equals(Material.IRON_INGOT)) || 
+							(e.getPlayer().getItemInHand().getType().equals(Material.GOLD_INGOT)) ||
+							(e.getPlayer().getItemInHand().getType().equals(Material.DIAMOND)) ||
+							(e.getPlayer().getItemInHand().getType().equals(Material.OBSIDIAN)) 	){					
+						
+						Chest_Avalon chest = new Chest_Avalon();
+						chest.setOwner(e.getPlayer().getUniqueId());
+						chest.setSavedBy(e.getPlayer().getItemInHand().getType());
+						
+						Avalon.chests.put(e.getClickedBlock().getLocation(), chest);
+						
+						e.getPlayer().sendMessage("§aErfolgreich Truhe mit " + e.getPlayer().getItemInHand().getType() + " gesichert!");
+						
+					}
+				}else{
+					
+					UUID uuid = Avalon.chests.get(e.getClickedBlock().getLocation()).getOwner();
+		
+					
+					if(! (	e.getPlayer().getUniqueId().equals( uuid ))){
+				
+						e.getPlayer().sendMessage("§cDiese Truhe ist leider von §6" + Bukkit.getServer().getPlayer(uuid).getName() + "§c mit §6" + Avalon.chests.get(e.getClickedBlock().getLocation()).getSavedBy() + "§c geschützt!");
+						e.setCancelled(true);
+					
+					}
+					
+				}
+				
+				
+			}
+		}
+	}
+	
+	//Chest System Ende
+	
+	
+	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onHeroInteract(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
@@ -33,17 +84,18 @@ public class HeroListener implements Listener {
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				int code = hero.getForest().use();
 				if (code == 1)
-					hero.sendMessage("Du hast die Spezialfähigkeit benutzt!");
+					hero.sendMessage("§aDu hast die Spezialfähigkeit benutzt!\n§6Du kannst nun Bäume mit einem Schlag abfarmen.");
 			}
 		} else if (Digging.tools.contains(mat)) {
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				int code = hero.getDigging().use();
 				if (code == 1)
-					hero.sendMessage("Du hast die Spezialfähigkeit benutzt!");
+					hero.sendMessage("§aDu hast die Spezialfähigkeit benutzt!\n§6Du hast nun den Potion Effect 'Eile'");
 			}
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e) {
 		Player player = e.getPlayer();
