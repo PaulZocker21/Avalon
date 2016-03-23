@@ -122,14 +122,15 @@ public class PacketBossBar implements BossBar {
 	}
 
 	public void setMessage(String message) {
-		/* 163 */ if (message == null)
+
+		if (message == null)
 			throw new IllegalArgumentException("message cannot be null");
-		/* 164 */ if ((!message.startsWith("{")) || (!message.endsWith("}"))) {
-			/* 165 */ throw new IllegalArgumentException("Invalid JSON");
+		if ((!message.startsWith("{")) || (!message.endsWith("}"))) {
+			throw new IllegalArgumentException("Invalid JSON");
 		}
-		/* 167 */ if (!message.equals(this.message)) {
-			/* 168 */ this.message = message;
-			/* 169 */ sendPacket(3, null);
+		if (!message.equals(this.message)) {
+			this.message = message;
+			sendPacket(3, null);
 		}
 	}
 

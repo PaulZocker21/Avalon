@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import de.avalon.bossbar.BossBar;
 import de.avalon.mmo.Clazz;
 import de.avalon.mmo.Digging;
 import de.avalon.mmo.Forest;
@@ -18,13 +19,18 @@ public class Hero {
 
 	private static HashMap<UUID, Hero> heros = new HashMap<>();
 
+	public static final int COMBAT_TIME = 10;
+
 	private UUID uuid;
 	private String name;
+	private BossBar bossbar;
+
 	private HashMap<String, Clazz> classes;
 	private String selectetClass;
 	private Mining mining;
 	private Forest forest;
 	private Digging digging;
+	private GUI gui;
 
 	private Hero(UUID uuid, String name) {
 		this.classes = new HashMap<>();
@@ -35,6 +41,7 @@ public class Hero {
 
 		this.selectetClass = "Test";
 		this.mining = new Mining(this);
+		this.gui = new GUI(this);
 	}
 
 	private Hero(UUID uuid, String name, String selectetClass) {
@@ -43,6 +50,19 @@ public class Hero {
 		this.name = name;
 		this.selectetClass = selectetClass;
 		this.mining = new Mining(this);
+		this.gui = new GUI(this);
+	}
+
+	public GUI getGui() {
+		return gui;
+	}
+
+	public void setBossbar(BossBar bossbar) {
+		this.bossbar = bossbar;
+	}
+
+	public BossBar getBossbar() {
+		return bossbar;
 	}
 
 	public Digging getDigging() {

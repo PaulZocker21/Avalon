@@ -1,28 +1,29 @@
 package de.avalon.listener;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import de.avalon.bossbar.BossBarAPI;
-import de.avalon.bossbar.BossBarAPI.Color;
-import de.avalon.bossbar.BossBarAPI.Style;
 import de.avalon.mmo.Digging;
 import de.avalon.mmo.Forest;
 import de.avalon.mmo.Mining;
+import de.avalon.player.GUI;
 import de.avalon.player.Hero;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class HeroListener implements Listener {
 
@@ -72,7 +73,7 @@ public class HeroListener implements Listener {
 		Hero hero = Hero.getHero(player);
 		if (hero == null)
 			hero = Hero.create(player);
-		Material mat = e.getPlayer().getItemInHand().getType();
+		Material mat = e.getPlayer().getInventory().getItemInMainHand().getType();
 		if (Forest.tools.contains(mat)) {
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				int code = hero.getForest().use();
@@ -95,7 +96,7 @@ public class HeroListener implements Listener {
 		if (hero == null)
 			hero = Hero.create(player);
 		Material mat = e.getBlock().getType();
-		Material tool = player.getItemInHand().getType();
+		Material tool = player.getInventory().getItemInMainHand().getType();
 		if (Mining.materials.containsKey(mat) && Mining.tools.contains(tool)) {
 			int exp = Mining.getExperience(mat);
 			hero.getMining().addExp(exp);
@@ -125,7 +126,7 @@ public class HeroListener implements Listener {
 		if (hero == null)
 			hero = Hero.create(player);
 		hero.sendMessage("Hallo " + hero.getName());
-		BossBarAPI.addBar(player, new TextComponent("Jaaa"), Color.BLUE, Style.NOTCHED_10, 1f).setVisible(true);;
+		hero.getGui().init();
 	}
 
 	@EventHandler
@@ -136,16 +137,49 @@ public class HeroListener implements Listener {
 	}
 
 	@EventHandler
+	public void onCombat(EntityDamageEvent e) {
+		Entity entity = e.getEntity();
+		if (entity instanceof LivingEntity) {
+			LivingEntity living = (LivingEntity) entity;
+			ArrayList<Hero> attackers = GUI.getAttackers(living);
+			if (attackers == null || attackers.isEmpty())
+				return;
+			attackers.forEach(hero -> hero.getGui().setBossBar(GUI.BOSS_BAR_COMBAT, living));
+		}
+	}
+
+	@EventHandler
+	public void onBeginCombat(EntityDamageByEntityEvent e) {
+		Entity entity = e.getEntity();
+		Entity damager = e.getDamager();
+		if (entity instanceof LivingEntity && damager instanceof Player) {
+			LivingEntity living = (LivingEntity) entity;
+			ArrayList<Hero> attackers = GUI.getAttackers(living);
+			if (attackers == null)
+				return;
+			Player player = (Player) damager;
+			Hero hero = Hero.getHero(player);
+			if (hero == null)
+				hero = Hero.create(player);
+			GUI.addAttacker(living, hero);
+			hero.getGui().setBossBar(GUI.BOSS_BAR_COMBAT, living);
+		}
+	}
+
+	@EventHandler
 	public void onEntityDeath(EntityDeathEvent e) {
 		Entity entity = e.getEntity();
 		if (entity instanceof Monster) {
-			if (((Monster) entity).getKiller() instanceof Player) {
-				Player killer = ((Monster) entity).getKiller();
+			Monster monster = (Monster) entity;
+			if (monster.getKiller() instanceof Player) {
+				Player killer = monster.getKiller();
 				Hero hero = Hero.getHero(killer);
 				if (hero == null)
 					hero = Hero.create(killer);
 				hero.getSelectetClass().addExp(30);
-				hero.getSelectetClass().setMana(0);
+				ArrayList<Hero> attackers = GUI.getAttackers(monster);
+				attackers.forEach(h -> h.getGui().setBossBar(GUI.BOSS_BAR_LEVEL));
+				GUI.remove(monster);
 			}
 		}
 	}
