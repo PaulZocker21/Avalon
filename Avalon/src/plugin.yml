@@ -4,3 +4,6 @@ author: [Paul, Tim]
 description: a rpg mmo plugin
 main: de.avalon.Avalon
 commands:
+  class:
+    usage: /class <change|create> <name>
+    description: Creates or changes  a class

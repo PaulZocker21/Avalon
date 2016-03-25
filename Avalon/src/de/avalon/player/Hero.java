@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -35,10 +36,10 @@ public class Hero {
 		this.uuid = uuid;
 		this.name = name;
 
-		addClass(new Clazz("Test", this));
-
-		this.selectetClass = "Test";
+		this.selectetClass = null;
 		this.mining = new Mining(this);
+		this.digging = new Digging(this);
+		this.forest = new Forest(this);
 		this.gui = new GUI(this);
 	}
 
@@ -47,8 +48,11 @@ public class Hero {
 		this.uuid = uuid;
 		this.name = name;
 		this.selectetClass = selectetClass;
-		this.mining = new Mining(this);
 		this.gui = new GUI(this);
+	}
+
+	public Clazz getClass(String name) {
+		return classes.get(name);
 	}
 
 	public GUI getGui() {
@@ -81,6 +85,10 @@ public class Hero {
 
 	public void setSelectetClass(String selectetClass) {
 		this.selectetClass = selectetClass;
+	}
+
+	public void setSelectetClass(Clazz selectetClass) {
+		this.selectetClass = selectetClass.getName();
 	}
 
 	public HashMap<String, Clazz> getClasses() {
@@ -154,11 +162,14 @@ public class Hero {
 			String name = config.getString(uuid + ".name");
 			String selectetClass = config.getString(uuid + ".selectetClass");
 			Hero hero = new Hero(UUID.fromString(uuid), name, selectetClass);
-			for (String clazzName : config.getConfigurationSection(uuid + ".classes").getKeys(false)) {
-				int level = config.getInt(uuid + ".classes." + clazzName + ".level");
-				int exp = config.getInt(uuid + ".classes." + clazzName + ".exp");
-				Clazz clazz = new Clazz(clazzName, level, exp, hero);
-				hero.addClass(clazz);
+			ConfigurationSection classes = config.getConfigurationSection(uuid + ".classes");
+			if (classes != null) {
+				for (String clazzName : config.getConfigurationSection(uuid + ".classes").getKeys(false)) {
+					int level = config.getInt(uuid + ".classes." + clazzName + ".level");
+					int exp = config.getInt(uuid + ".classes." + clazzName + ".exp");
+					Clazz clazz = new Clazz(clazzName, level, exp, hero);
+					hero.addClass(clazz);
+				}
 			}
 			int miningLevel = config.getInt(uuid + ".mining.level");
 			int miningExp = config.getInt(uuid + ".mining.exp");

@@ -123,9 +123,13 @@ public class HeroListener implements Listener {
 	public void onHeroJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
 		Hero hero = Hero.getHero(player);
-		if (hero == null)
+		if (hero == null) {
 			hero = Hero.create(player);
-		hero.sendMessage("Hallo " + hero.getName());
+			hero.sendMessage("§7Herzlich Willkommen auf Avalon §6" + hero.getName());
+		} else {
+			hero.setName(player.getName());
+			hero.sendMessage("§7Willkommen zurück§6 " + hero.getName());
+		}
 		hero.getGui().init();
 	}
 
@@ -146,6 +150,8 @@ public class HeroListener implements Listener {
 			Player player = (Player) damager;
 			LivingEntity living = (LivingEntity) entity;
 			Hero hero = Hero.getHero(player);
+			if (hero.getSelectetClass() == null)
+				return;
 			if (hero.getGui().getCombatTask() == null) {
 				hero.getGui().setCombatTask(new BukkitRunnable() {
 
@@ -178,6 +184,8 @@ public class HeroListener implements Listener {
 				Hero hero = Hero.getHero(killer);
 				if (hero == null)
 					hero = Hero.create(killer);
+				if (hero.getSelectetClass() == null)
+					return;
 				hero.getSelectetClass().addExp(30);
 			}
 		}

@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.avalon.commands.ClassCommands;
 import de.avalon.listener.HeroListener;
 import de.avalon.listener.SkillListener;
 import de.avalon.mmo.Chest_Avalon;
@@ -27,6 +28,8 @@ public class Avalon extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new HeroListener(), this);
 		getServer().getPluginManager().registerEvents(new SkillListener(), this);
 
+		getCommand("class").setExecutor(new ClassCommands());;
+		
 		Hero.loadAll(player_file);
 	}
 

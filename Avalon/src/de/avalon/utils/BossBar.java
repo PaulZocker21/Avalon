@@ -32,6 +32,8 @@ public class BossBar {
 
 	public BossBar() {
 		this.players = new ArrayList<>();
+		
+		bossbars.add(this);
 	}
 
 	public BossBar(String text, Color color, Style style, float progress) {

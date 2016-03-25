@@ -7,6 +7,7 @@ import org.bukkit.entity.WitherSkull;
 
 import de.avalon.listener.SkillListener;
 import de.avalon.mmo.Clazz;
+import de.avalon.mmo.PriestClazz;
 import de.avalon.rpg.Skill;
 import de.avalon.utils.ParticleEffectAPI;
 
@@ -14,9 +15,10 @@ public class Aufopferung extends Skill {
 
 	public Aufopferung(String name, int minMana, int minLevel, int cooldown, String description) {
 		super(name, minMana, minLevel, cooldown, description);
+
+		PriestClazz.skills.add(this);
 	}
-	
-	
+
 	@Override
 	public void use(Clazz clazz) {
 		clazz.setLastUse(this, System.currentTimeMillis());
@@ -25,42 +27,31 @@ public class Aufopferung extends Skill {
 
 	@Override
 	public int run(Clazz clazz) {
-	
-		
+
 		if (super.run(clazz) == 1) {
-			
+
 			Player player = clazz.getHero().getBukkitPlayer();
 
-			
-			
-			
-	          EntityType snow = EntityType.WITHER_SKULL;
-              Location loc = player.getLocation().add(0, 1, 0);
-              
-              
-              WitherSkull sb = (WitherSkull) player.getWorld().spawnEntity(loc, snow);
-         
-   
-              
-              sb.getLocation().getDirection().multiply(10D).setY(0D);    		
-              sb.setShooter(player);
-              sb.setVelocity(player.getEyeLocation().getDirection());
-			    
-              SkillListener.aws.add(sb);
+			EntityType snow = EntityType.WITHER_SKULL;
+			Location loc = player.getLocation().add(0, 1, 0);
 
-			  ParticleEffectAPI.SPELL_WITCH.display(1, 1, 1, 1, 50, clazz.getHero().getBukkitPlayer().getLocation().add(0, 1, 0) , 2);
-              ParticleEffectAPI.SMOKE_LARGE.display(1, 1, 1, 0, 20, clazz.getHero().getBukkitPlayer().getLocation().add(0, 1, 0) , 2);
-  			
-			
-			                    
+			WitherSkull sb = (WitherSkull) player.getWorld().spawnEntity(loc, snow);
+
+			sb.getLocation().getDirection().multiply(10D).setY(0D);
+			sb.setShooter(player);
+			sb.setVelocity(player.getEyeLocation().getDirection());
+
+			SkillListener.aws.add(sb);
+
+			ParticleEffectAPI.SPELL_WITCH.display(1, 1, 1, 1, 50, clazz.getHero().getBukkitPlayer().getLocation().add(0, 1, 0), 2);
+			ParticleEffectAPI.SMOKE_LARGE.display(1, 1, 1, 0, 20, clazz.getHero().getBukkitPlayer().getLocation().add(0, 1, 0), 2);
+
 			clazz.getHero().getBukkitPlayer().setHealth(0d);
 			clazz.getHero().getBukkitPlayer().sendMessage("§aErfolgreich Skill §6Aufopferung §aausgeführt");
-			
+
 			use(clazz);
 		}
-		
 
-		
 		return super.run(clazz);
 	}
 

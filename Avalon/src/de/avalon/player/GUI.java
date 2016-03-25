@@ -12,6 +12,7 @@ public class GUI {
 
 	public static final int BOSS_BAR_LEVEL = 1;
 	public static final int BOSS_BAR_COMBAT = 2;
+	public static final int BOSS_BAR_NOT_SELECTED = 3;
 
 	public static final long COMBAT_TIME = 5 * 1000L;
 
@@ -39,17 +40,32 @@ public class GUI {
 			Color color = null;
 			Style style = null;
 			float progress = 0;
-			if (bossBarState == BOSS_BAR_LEVEL) {
+			if (hero.getSelectetClass() == null) {
+				if (bossBarState == BOSS_BAR_NOT_SELECTED) {
+					progress = 1f;
+					if (hero.getClasses().isEmpty()) {
+						text = "§fErstelle dir eine §6Klasse §fum spielen zu können!";
+						color = Color.RED;
+						style = Style.PROGRESS;
+					} else {
+						text = "§fWähle eine deiner §6" + hero.getClasses().size() + " Klassen §f um Spielen zu können!";
+						color = Color.BLUE;
+						style = Style.NOTCHED_10;
+					}
+				} else {
+					setBossBar(BOSS_BAR_NOT_SELECTED);
+					return;
+				}
+			} else {
 				int level = hero.getSelectetClass().getLevel();
 				int exp = hero.getSelectetClass().getExp();
 				int maxExp = hero.getSelectetClass().calculateMaxExp(level + 1);
-				progress = (float) ((float) exp / (float) maxExp);
-				text = "Level: §6" + level + "§f Experience: §6" + exp + "§f/§c" + maxExp;
+
+				text = "§fKlasse: §6" + hero.getSelectetClass().getName() + " §fLevel: §6" + level + "§f Experience: §6" + exp + "§f/§c" + maxExp;
 				color = Color.BLUE;
 				style = Style.PROGRESS;
-			} else {
-				setBossBar(BOSS_BAR_LEVEL);
-				return;
+				progress = (float) ((float) exp / (float) maxExp);
+
 			}
 			this.bossbar = new BossBar(text, color, style, progress);
 			bossbar.addPlayer(hero.getBukkitPlayer());
@@ -70,7 +86,7 @@ public class GUI {
 			int exp = hero.getSelectetClass().getExp();
 			int maxExp = hero.getSelectetClass().calculateMaxExp(level + 1);
 
-			String text = "Level: §6" + level + "§f Experience: §6" + exp + "§f/§c" + maxExp;
+			String text = "§fKlasse: §6" + hero.getSelectetClass().getName() + " §fLevel: §6" + level + "§f Experience: §6" + exp + "§f/§c" + maxExp;
 			Color color = Color.BLUE;
 			Style style = Style.PROGRESS;
 			float progress = (float) ((float) exp / (float) maxExp);
@@ -89,12 +105,30 @@ public class GUI {
 				Color color = Color.RED;
 				Style style = Style.NOTCHED_20;
 				float progress = (float) ((float) entity.getHealth() / (float) entity.getMaxHealth());
-				
+
 				bossbar.setMessage(text);
 				bossbar.setColor(color);
 				bossbar.setStyle(style);
 				bossbar.setProgress(progress);
 			}
+		} else if (bossBarState == BOSS_BAR_NOT_SELECTED) {
+			float progress = 1f;
+			String text;
+			Color color;
+			Style style;
+			if (hero.getClasses().isEmpty()) {
+				text = "§fErstelle dir eine §6Klasse §fum spielen zu können!";
+				color = Color.RED;
+				style = Style.PROGRESS;
+			} else {
+				text = "§fWähle eine deiner §6" + hero.getClasses().size() + " Klassen §f um Spielen zu können!";
+				color = Color.BLUE;
+				style = Style.NOTCHED_10;
+			}
+			bossbar.setMessage(text);
+			bossbar.setColor(color);
+			bossbar.setStyle(style);
+			bossbar.setProgress(progress);
 		}
 	}
 
