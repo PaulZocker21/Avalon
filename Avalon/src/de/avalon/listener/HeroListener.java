@@ -1,6 +1,5 @@
 package de.avalon.listener;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Material;
@@ -13,12 +12,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import de.avalon.Avalon;
 import de.avalon.mmo.Digging;
 import de.avalon.mmo.Forest;
 import de.avalon.mmo.Mining;
@@ -131,38 +131,41 @@ public class HeroListener implements Listener {
 
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent e) {
-		Hero hero = Hero.getHero(e.getPlayer());
+		Player player = e.getPlayer();
+		Hero hero = Hero.getHero(player);
 		if (hero == null)
 			hero = Hero.create(e.getPlayer());
-	}
 
-	@EventHandler
-	public void onCombat(EntityDamageEvent e) {
-		Entity entity = e.getEntity();
-		if (entity instanceof LivingEntity) {
-			LivingEntity living = (LivingEntity) entity;
-			ArrayList<Hero> attackers = GUI.getAttackers(living);
-			if (attackers == null || attackers.isEmpty())
-				return;
-			attackers.forEach(hero -> hero.getGui().setBossBar(GUI.BOSS_BAR_COMBAT, living));
-		}
 	}
 
 	@EventHandler
 	public void onBeginCombat(EntityDamageByEntityEvent e) {
 		Entity entity = e.getEntity();
 		Entity damager = e.getDamager();
-		if (entity instanceof LivingEntity && damager instanceof Player) {
-			LivingEntity living = (LivingEntity) entity;
-			ArrayList<Hero> attackers = GUI.getAttackers(living);
-			if (attackers == null)
-				return;
+		if (damager instanceof Player && entity instanceof LivingEntity) {
 			Player player = (Player) damager;
+			LivingEntity living = (LivingEntity) entity;
 			Hero hero = Hero.getHero(player);
-			if (hero == null)
-				hero = Hero.create(player);
-			GUI.addAttacker(living, hero);
-			hero.getGui().setBossBar(GUI.BOSS_BAR_COMBAT, living);
+			System.out.println(living.getNoDamageTicks());
+			if (hero.getGui().getCombatTask() == null) {
+				hero.getGui().setCombatTask(new BukkitRunnable() {
+
+					private long start = System.currentTimeMillis();
+					private LivingEntity entity = living;
+
+					@Override
+					public void run() {
+						Hero hero = Hero.getHero(player);
+						if (start + GUI.COMBAT_TIME < System.currentTimeMillis() || entity.isDead()) {
+							hero.getGui().setBossBar(GUI.BOSS_BAR_LEVEL);
+							hero.getGui().setCombatTask(null);
+							cancel();
+							return;
+						}
+						hero.getGui().setBossBar(GUI.BOSS_BAR_COMBAT, entity);
+					}
+				}.runTaskTimer(Avalon.getPlguin(), 0, living.getNoDamageTicks()));
+			}
 		}
 	}
 
@@ -177,9 +180,6 @@ public class HeroListener implements Listener {
 				if (hero == null)
 					hero = Hero.create(killer);
 				hero.getSelectetClass().addExp(30);
-				ArrayList<Hero> attackers = GUI.getAttackers(monster);
-				attackers.forEach(h -> h.getGui().setBossBar(GUI.BOSS_BAR_LEVEL));
-				GUI.remove(monster);
 			}
 		}
 	}

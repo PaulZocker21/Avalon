@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import de.avalon.bossbar.BossBar;
 import de.avalon.mmo.Clazz;
 import de.avalon.mmo.Digging;
 import de.avalon.mmo.Forest;
@@ -23,7 +22,6 @@ public class Hero {
 
 	private UUID uuid;
 	private String name;
-	private BossBar bossbar;
 
 	private HashMap<String, Clazz> classes;
 	private String selectetClass;
@@ -55,14 +53,6 @@ public class Hero {
 
 	public GUI getGui() {
 		return gui;
-	}
-
-	public void setBossbar(BossBar bossbar) {
-		this.bossbar = bossbar;
-	}
-
-	public BossBar getBossbar() {
-		return bossbar;
 	}
 
 	public Digging getDigging() {
@@ -184,6 +174,10 @@ public class Hero {
 			hero.setDigging(digging);
 
 			heros.put(hero.getUniqueId(), hero);
+
+			Player player = Bukkit.getPlayer(hero.getUniqueId());
+			if (player != null && player.isOnline())
+				hero.getGui().init();
 		}
 		System.out.println("Loaded " + heros.size() + " heros");
 	}

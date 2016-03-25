@@ -1,54 +1,36 @@
 package de.avalon.player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
-import de.avalon.bossbar.BossBar;
-import de.avalon.bossbar.BossBarAPI;
-import de.avalon.bossbar.BossBarAPI.Color;
-import de.avalon.bossbar.BossBarAPI.Style;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import de.avalon.utils.BossBar;
+import de.avalon.utils.BossBar.Color;
+import de.avalon.utils.BossBar.Style;
 
 public class GUI {
 
-	private static HashMap<Entity, ArrayList<Hero>> attackers = new HashMap<>();
-
-	public static HashMap<Entity, ArrayList<Hero>> getAttackers() {
-		return attackers;
-	}
-
-	public static void addAttacker(Entity entity, Hero hero) {
-		ArrayList<Hero> attackers = getAttackers(entity);
-		if (attackers == null) {
-			attackers = new ArrayList<Hero>();
-		}
-		attackers.add(hero);
-		GUI.attackers.put(entity, attackers);
-	}
-
-	public static void remove(Entity entity) {
-		attackers.remove(entity);
-	}
-
-	public static ArrayList<Hero> getAttackers(Entity entity) {
-		return attackers.get(entity);
-	}
-
 	public static final int BOSS_BAR_LEVEL = 1;
 	public static final int BOSS_BAR_COMBAT = 2;
+
+	public static final long COMBAT_TIME = 5 * 1000L;
 
 	private Hero hero;
 	private BossBar bossbar;
 	private Scoreboard scoreboard;
 	private int bossBarState;
+	private BukkitTask combatTask;
 
 	public GUI(Hero hero) {
 		this.hero = hero;
+	}
+
+	public BukkitTask getCombatTask() {
+		return combatTask;
+	}
+
+	public void setCombatTask(BukkitTask combatTask) {
+		this.combatTask = combatTask;
 	}
 
 	public void init() {
@@ -69,7 +51,8 @@ public class GUI {
 				setBossBar(BOSS_BAR_LEVEL);
 				return;
 			}
-			this.bossbar = BossBarAPI.addBar(hero.getBukkitPlayer(), new TextComponent(text), color, style, progress);
+			this.bossbar = new BossBar(text, color, style, progress);
+			bossbar.addPlayer(hero.getBukkitPlayer());
 		}
 	}
 
@@ -92,7 +75,7 @@ public class GUI {
 			Style style = Style.PROGRESS;
 			float progress = (float) ((float) exp / (float) maxExp);
 
-			bossbar.setMessage(ComponentSerializer.toString(new TextComponent(text)));
+			bossbar.setMessage(text);
 			bossbar.setColor(color);
 			bossbar.setStyle(style);
 			bossbar.setProgress(progress);
@@ -105,9 +88,9 @@ public class GUI {
 				String text = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
 				Color color = Color.RED;
 				Style style = Style.NOTCHED_20;
-				float progress = (float) (entity.getHealth() / entity.getMaxHealth());
-
-				bossbar.setMessage(ComponentSerializer.toString(new TextComponent(text)));
+				float progress = (float) ((float) entity.getHealth() / (float) entity.getMaxHealth());
+				
+				bossbar.setMessage(text);
 				bossbar.setColor(color);
 				bossbar.setStyle(style);
 				bossbar.setProgress(progress);

@@ -11,6 +11,7 @@ import de.avalon.listener.HeroListener;
 import de.avalon.listener.SkillListener;
 import de.avalon.mmo.Chest_Avalon;
 import de.avalon.player.Hero;
+import de.avalon.utils.BossBar;
 
 public class Avalon extends JavaPlugin {
 
@@ -18,14 +19,14 @@ public class Avalon extends JavaPlugin {
 	private final File player_file = new File(getDataFolder(), "/players.yml");
 
 	public static HashMap<Location, Chest_Avalon> chests = new HashMap<Location, Chest_Avalon>();
-	
+
 	@Override
 	public void onEnable() {
 		instance = this;
 
 		getServer().getPluginManager().registerEvents(new HeroListener(), this);
 		getServer().getPluginManager().registerEvents(new SkillListener(), this);
-		
+
 		Hero.loadAll(player_file);
 	}
 
@@ -33,6 +34,8 @@ public class Avalon extends JavaPlugin {
 	public void onDisable() {
 
 		Hero.saveAll(player_file);
+
+		BossBar.clearBossBars();
 	}
 
 	@Override
