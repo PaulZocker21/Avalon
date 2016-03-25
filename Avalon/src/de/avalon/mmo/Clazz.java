@@ -21,7 +21,6 @@ public class Clazz extends Levelable {
 	public int getMaxLevel() {
 		return 100;
 	}
-	
 
 	public Clazz(String name, Hero hero) {
 		super();

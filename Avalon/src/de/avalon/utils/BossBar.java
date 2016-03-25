@@ -5,9 +5,6 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
-
 public class BossBar {
 
 	public static Class<?> PacketPlayOutBoss = ReflectionUtils.getClass(ReflectionUtils.PackageType.MINECRAFT_SERVER + ".PacketPlayOutBoss");
@@ -23,7 +20,7 @@ public class BossBar {
 	public static void clearBossBars() {
 		bossbars.forEach(bar -> bar.update(Action.REMOVE));
 	}
-	
+
 	private ArrayList<Player> players;
 
 	private String text;
@@ -124,7 +121,7 @@ public class BossBar {
 			Object packet = PacketPlayOutBoss.newInstance();
 			ReflectionUtils.setValue(packet, true, "a", id);
 			ReflectionUtils.setValue(packet, true, "b", PacketAction.getEnumConstants()[action.ordinal()]);
-			ReflectionUtils.setValue(packet, true, "c", ChatSerializer.getMethod("a", new Class[] { String.class }).invoke(ChatSerializer.newInstance(), new Object[] { ComponentSerializer.toString(new TextComponent(text)) }));
+			ReflectionUtils.setValue(packet, true, "c", ChatSerializer.getMethod("a", new Class[] { String.class }).invoke(ChatSerializer.newInstance(), new Object[] { "{\"text\":\"" + text + "\"}" }));
 			ReflectionUtils.setValue(packet, true, "d", progress);
 			ReflectionUtils.setValue(packet, true, "e", BarColor.getEnumConstants()[color.ordinal()]);
 			ReflectionUtils.setValue(packet, true, "f", BarStyle.getEnumConstants()[style.ordinal()]);

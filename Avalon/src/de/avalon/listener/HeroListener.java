@@ -146,7 +146,6 @@ public class HeroListener implements Listener {
 			Player player = (Player) damager;
 			LivingEntity living = (LivingEntity) entity;
 			Hero hero = Hero.getHero(player);
-			System.out.println(living.getNoDamageTicks());
 			if (hero.getGui().getCombatTask() == null) {
 				hero.getGui().setCombatTask(new BukkitRunnable() {
 
