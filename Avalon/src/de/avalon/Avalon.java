@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import de.avalon.commands.ClassCommands;
 import de.avalon.commands.HeroCommands;
 import de.avalon.listener.HeroListener;
+import de.avalon.listener.MenuListener;
 import de.avalon.listener.SkillListener;
 import de.avalon.mmo.Chest_Avalon;
 import de.avalon.player.Hero;
@@ -24,17 +25,18 @@ public class Avalon extends JavaPlugin {
 
 	public static HashMap<Location, Chest_Avalon> chests = new HashMap<Location, Chest_Avalon>();
 	public static Random random = new Random();
-	
+
 	@Override
 	public void onEnable() {
 		instance = this;
 
 		getServer().getPluginManager().registerEvents(new HeroListener(), this);
 		getServer().getPluginManager().registerEvents(new SkillListener(), this);
+		getServer().getPluginManager().registerEvents(new MenuListener(), this);
 
-		getCommand("class").setExecutor(new ClassCommands());;
-		getCommand("hero").setExecutor(new HeroCommands());;
-		
+		getCommand("class").setExecutor(new ClassCommands());
+		getCommand("hero").setExecutor(new HeroCommands());
+
 		Hero.loadAll(player_file);
 	}
 

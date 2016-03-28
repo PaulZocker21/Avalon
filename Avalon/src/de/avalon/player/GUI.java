@@ -21,6 +21,7 @@ public class GUI {
 	private Scoreboard scoreboard;
 	private int bossBarState;
 	private BukkitTask combatTask;
+	private long startCombat;
 
 	public GUI(Hero hero) {
 		this.hero = hero;
@@ -32,6 +33,14 @@ public class GUI {
 
 	public void setCombatTask(BukkitTask combatTask) {
 		this.combatTask = combatTask;
+	}
+
+	public long getStartCombat() {
+		return startCombat;
+	}
+
+	public void setStartCombat(long startCombat) {
+		this.startCombat = startCombat;
 	}
 
 	public void init() {

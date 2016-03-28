@@ -153,15 +153,15 @@ public class HeroListener implements Listener {
 			if (hero.getSelectetClass() == null)
 				return;
 			if (hero.getGui().getCombatTask() == null) {
+				hero.getGui().setStartCombat(System.currentTimeMillis());
 				hero.getGui().setCombatTask(new BukkitRunnable() {
 
-					private long start = System.currentTimeMillis();
 					private LivingEntity entity = living;
 
 					@Override
 					public void run() {
 						Hero hero = Hero.getHero(player);
-						if (start + GUI.COMBAT_TIME < System.currentTimeMillis() || entity.isDead()) {
+						if (hero.getGui().getStartCombat() + GUI.COMBAT_TIME < System.currentTimeMillis() || entity.isDead()) {
 							hero.getGui().setBossBar(GUI.BOSS_BAR_LEVEL);
 							hero.getGui().setCombatTask(null);
 							cancel();
@@ -170,6 +170,8 @@ public class HeroListener implements Listener {
 						hero.getGui().setBossBar(GUI.BOSS_BAR_COMBAT, entity);
 					}
 				}.runTaskTimer(Avalon.getPlguin(), 0, living.getNoDamageTicks()));
+			} else {
+				hero.getGui().setStartCombat(System.currentTimeMillis());
 			}
 		}
 	}
