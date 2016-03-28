@@ -576,7 +576,7 @@ public enum ParticleEffectAPI {
 		if (hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
 			throw new IllegalArgumentException("There is no water at the center location");
 		}
-		new ParticlePacket(this, offsetX, offsetY, offsetZ, speed, amount, isLongDistance(center, players), null).sendTo(center, players);
+		new ParticlePacket(this, offsetX, offsetY, offsetZ, speed, amount, true, null).sendTo(center, players);
 	}
 
 	/**
@@ -954,7 +954,7 @@ public enum ParticleEffectAPI {
 		 * Returns the data as an int array for packet construction
 		 * 
 		 * @return The data for the packet
-		 */
+		 */	
 		public int[] getPacketData() {
 			return packetData;
 		}

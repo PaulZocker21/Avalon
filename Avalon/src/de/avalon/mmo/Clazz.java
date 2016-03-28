@@ -2,12 +2,14 @@ package de.avalon.mmo;
 
 import java.util.HashMap;
 
+import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import de.avalon.Avalon;
 import de.avalon.player.Hero;
 import de.avalon.rpg.Skill;
+import de.avalon.utils.ParticleEffectAPI;
 
 public class Clazz extends Levelable {
 
@@ -16,7 +18,7 @@ public class Clazz extends Levelable {
 	private String name;
 	private int mana;
 	private int maxMana;
-	
+
 	@Override
 	public int getMaxLevel() {
 		return 100;
@@ -123,6 +125,39 @@ public class Clazz extends Levelable {
 	public void reachNextLevel(int level) {
 		setMaxMana(20 + (level * 5));
 		hero.sendMessage("Herzlichen Glückwunsch, du hast " + level + " erreicht!");
+		new BukkitRunnable() {
+
+			private double t = Math.PI / 4;
+			private Location loc = hero.getBukkitPlayer().getEyeLocation();
+			private final int maxRadius = 15;
+
+			@Override
+			public void run() {
+				if (t > maxRadius) {
+					cancel();
+					return;
+				}
+				t += 0.1 * Math.PI;
+				for (double theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 32) {
+					double x = t * Math.cos(theta);
+					double y = 2 * Math.exp(-0.1 * t) * Math.sin(t);
+					double z = t * Math.sin(theta);
+					loc.add(x, y, z);
+					ParticleEffectAPI.FIREWORKS_SPARK.display(0, 0, 0, 0, 1, loc, hero.getBukkitPlayer());
+					loc.subtract(x, y, z);
+
+					theta = theta + Math.PI / 64;
+					
+					x = t * Math.cos(theta);
+					y = 2 * Math.exp(-0.1 * t) * Math.sin(t);
+					z = t * Math.sin(theta);
+					loc.add(x, y, z);
+					ParticleEffectAPI.SPELL_WITCH.display(0, 0, 0, 0, 1, loc, hero.getBukkitPlayer());
+					loc.subtract(x, y, z);
+				}
+			}
+		}.runTaskTimer(Avalon.getPlguin(), 0, 1L);
+
 	}
 
 	@Override

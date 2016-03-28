@@ -186,7 +186,7 @@ public class HeroListener implements Listener {
 					hero = Hero.create(killer);
 				if (hero.getSelectetClass() == null)
 					return;
-				hero.getSelectetClass().addExp(30);
+				hero.getSelectetClass().addExp(Avalon.random.nextInt(20) + 20);
 			}
 		}
 	}

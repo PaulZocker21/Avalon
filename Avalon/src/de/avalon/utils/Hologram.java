@@ -56,5 +56,4 @@ public class Hologram {
 		this.text = text;
 		armorstand.setCustomName(text);
 	}
-	
 }

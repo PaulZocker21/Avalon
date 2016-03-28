@@ -7,3 +7,6 @@ commands:
   class:
     usage: /class <change|create> <name>
     description: Creates or changes  a class
+  hero:
+    usage: /hero <stats>
+    description: Hero commands

@@ -175,10 +175,12 @@ public class Hero {
 			int miningExp = config.getInt(uuid + ".mining.exp");
 			Mining mining = new Mining(miningLevel, miningExp, hero);
 			hero.setMining(mining);
+			
 			int forestLevel = config.getInt(uuid + ".forest.level");
 			int forestExp = config.getInt(uuid + ".forest.exp");
 			Forest forest = new Forest(forestLevel, forestExp, hero);
 			hero.setForest(forest);
+			
 			int diggingLevel = config.getInt(uuid + ".digging.level");
 			int diggingExp = config.getInt(uuid + ".digging.exp");
 			Digging digging = new Digging(diggingLevel, diggingExp, hero);
